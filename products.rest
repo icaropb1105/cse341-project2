@@ -1,0 +1,60 @@
+### Get all products
+GET http://localhost:8080/products
+
+
+### Create product
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "name": "Boxing Gloves",
+  "price": 199.90,
+  "category": "Boxe",
+  "brand": "Everlast",
+  "stock": 10,
+  "description": "Professional Gloves",
+  "rating": 4.8
+}
+
+
+### Create product
+POST http://localhost:8080/products
+Content-Type: application/json
+
+{
+  "name": "Muay Thai Shin Guards",
+  "price": 149.99,
+  "category": "Martial Arts",
+  "brand": "Venum",
+  "stock": 15,
+  "description": "Professional shin guards for Muay Thai training",
+  "rating": 4.7
+}
+
+
+
+### Get product by id
+GET http://localhost:8080/products/697803fe5ea3b9eefaa717bc
+
+
+### Update product
+PUT http://localhost:8080/products/697804cb5ea3b9eefaa717c0
+Content-Type: application/json
+
+{
+  "name": "Pro Boxing Gloves",
+  "price": 249.90,
+  "category": "Boxe",
+  "brand": "Everlast",
+  "stock": 8,
+  "description": "Professional Gloves Updated",
+  "rating": 4.9
+}
+
+
+### Delete product
+DELETE http://localhost:8080/products/697804cb5ea3b9eefaa717c0
+
+
+
+
