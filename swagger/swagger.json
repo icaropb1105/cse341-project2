@@ -1,0 +1,173 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CSE 341 Project 2 API",
+    "description": "Products API with OAuth (JWT) Authentication",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:8080" },
+    { "url": "https://cse341-project2-na2c.onrender.com" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Product": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string", "example": "Boxing Gloves" },
+          "price": { "type": "number", "example": 199.9 },
+          "category": { "type": "string", "example": "Boxing" },
+          "brand": { "type": "string", "example": "Everlast" },
+          "stock": { "type": "integer", "example": 10 },
+          "description": { "type": "string", "example": "Professional Gloves" },
+          "rating": { "type": "number", "example": 4.8 }
+        }
+      }
+    }
+  },
+  "security": [
+    { "bearerAuth": [] }
+  ],
+  "paths": {
+    "/auth/google": {
+      "get": {
+        "summary": "Login with Google",
+        "tags": ["Auth"],
+        "responses": {
+          "302": { "description": "Redirect to Google OAuth" }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "Get all products",
+        "tags": ["Products"],
+        "responses": {
+          "200": {
+            "description": "List of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Product" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create product",
+        "tags": ["Products"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "price", "category", "brand", "stock", "description"],
+                "properties": {
+                  "name": { "type": "string", "example": "Heavy Bag" },
+                  "price": { "type": "number", "example": 399.99 },
+                  "category": { "type": "string", "example": "Boxing" },
+                  "brand": { "type": "string", "example": "Everlast" },
+                  "stock": { "type": "integer", "example": 5 },
+                  "description": { "type": "string", "example": "Professional heavy bag" },
+                  "rating": { "type": "number", "example": 4.9 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Product created" },
+          "400": { "description": "Bad request" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "summary": "Get product by ID",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Product found" },
+          "404": { "description": "Not found" }
+        }
+      },
+      "put": {
+        "summary": "Update product",
+        "tags": ["Products"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "price", "category", "brand", "stock", "description"],
+                "properties": {
+                  "name": { "type": "string", "example": "Pro Boxing Gloves" },
+                  "price": { "type": "number", "example": 249.9 },
+                  "category": { "type": "string", "example": "Boxing" },
+                  "brand": { "type": "string", "example": "Everlast" },
+                  "stock": { "type": "integer", "example": 8 },
+                  "description": { "type": "string", "example": "Professional Gloves Updated" },
+                  "rating": { "type": "number", "example": 4.9 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Updated" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" }
+        }
+      },
+      "delete": {
+        "summary": "Delete product",
+        "tags": ["Products"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Deleted" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" }
+        }
+      }
+    }
+  }
+}

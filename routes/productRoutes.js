@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
 const { validateProduct } = require('../middleware/validate');
+const auth = require('../middleware/auth');
 
 router.get('/', productController.getAllProducts);
 router.get('/:id', productController.getProductById);
