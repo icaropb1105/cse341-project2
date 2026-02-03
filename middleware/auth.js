@@ -1,31 +1,19 @@
-const express = require('express');
-const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
-const router = express.Router();
+module.exports = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-// Inicia login com Google
-router.get(
-  '/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
-
-// Callback do Google
-router.get(
-  '/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: '/' }),
-  (req, res) => {
-    const token = jwt.sign(
-      { userId: req.user._id, email: req.user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    res.json({
-      message: 'Login successful',
-      token
-    });
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'No token provided' });
   }
-);
 
-module.exports = router;
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next(); 
+  } catch (err) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+};

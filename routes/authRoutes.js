@@ -1,21 +1,31 @@
 const express = require('express');
 const passport = require('passport');
-const { googleCallback, logout } = require('../controllers/authController');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
+// Inicia login com Google
 router.get(
-  '/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: '/auth/failed' }),
-  googleCallback
+  '/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
-router.get('/logout', logout);
+// Callback do Google
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: '/' }),
+  (req, res) => {
+    const token = jwt.sign(
+      { userId: req.user._id, email: req.user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
-router.get('/failed', (req, res) => {
-  res.status(401).json({ message: 'Authentication failed' });
-});
+    res.json({
+      message: 'Login successful',
+      token
+    });
+  }
+);
 
 module.exports = router;
